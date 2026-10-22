@@ -1,113 +1,29 @@
-Default to using Bun instead of Node.js.
+# temps-proj-otel-dash
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun check` instead of `tsc --noEmit`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+Rust external plugin for Temps (OpenTelemetry trace ingest + dashboard).
+Read `README.md` for the architecture; `~/.claude/skills/temps-plugin` has the
+general plugin rules.
 
-## APIs
+## Commands
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+- `cargo check --tests` after every Rust change; `cargo test`; `cargo clippy --all-targets -- -D warnings`.
+- `FORCE_WEB_BUILD=1 cargo build --release` for a binary with the embedded UI.
+- Web UI lives in `web/` and uses Bun: `bun install`, `bun run build` (`tsc -b && vite build`), `bun run dev`.
+- Cargo's target dir may be redirected by the global Cargo config (currently `/mnt/pool/cargo-target`).
 
-## Testing
+## Rules
 
-Use `bun test` to run tests.
+- Never add a `/health` route or `#[tokio::main]`; the SDK runtime owns both.
+- Async init inside `router()` goes through `tokio::task::block_in_place` + `Handle::current().block_on`.
+- Ingest handlers must not await the database. Push rows into `IngestQueue`; only the writer task touches `SpanStore`'s writer pool.
+- `/v1/*` is a `public_path`: every handler under it must verify the ingest token via `authorize_ingest` (header `X-Otel-Dash-Token`). The Temps proxy strips `Authorization`/`Cookie`/`x-temps-*`, so never rely on those.
+- Mutating settings/token routes take `AuthenticatedCaller` and call `require_admin`.
+- Wire types in `src/types.rs` are `serde(rename_all = "camelCase")` and mirrored in `web/src/types.ts`; keep both in sync.
+- Typed errors (`thiserror`), no `unwrap`/`expect` outside tests and startup.
+- Tests live beside the code in `#[cfg(test)] mod tests` and use `tempfile` for SQLite.
+- `vite.config.ts` `base` must stay `/api/x/otel-dash/ui/`.
+- The `temps-plugin-sdk` git tag is a deliberate pin; do not bump it casually.
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
+## Bun
 
-test("hello world", () => {
-  expect(1).toBe(1);
-});
-```
-
-## Type checking
-
-Use `bun check` to type check the project. It reads `tsconfig.json` and reports the same errors as `tsc`.
-
-- `bun check src/index.ts` checks one file and what it imports
-- `bun --check src/index.ts`, `bun test --check` and `bun build --check` type check first, and do nothing else if there is an error
-
-## Frontend
-
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
-
-Server:
-
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
-```
-
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
-
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
-
-With the following `frontend.tsx`:
-
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
-
-// import .css files directly and it works
-import './index.css';
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+Use `bun` (not npm/yarn/pnpm/node) for anything in `web/`.
