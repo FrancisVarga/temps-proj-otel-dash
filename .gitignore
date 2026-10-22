@@ -40,3 +40,6 @@ graft/.cache
 # TypeScript build output
 ts/node_modules/
 ts/dist/
+
+# Claude Code skill symlinks into .agents/skills (Temps GitHub installer rejects archives with links)
+.claude/skills/
