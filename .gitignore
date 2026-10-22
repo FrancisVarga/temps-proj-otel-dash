@@ -36,3 +36,7 @@ graft/.cache
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
+
+# TypeScript build output
+ts/node_modules/
+ts/dist/

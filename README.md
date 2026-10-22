@@ -1,9 +1,22 @@
 # temps-proj-otel-dash
 
-OpenTelemetry dashboard plugin for [Temps](https://temps.sh), written in Rust on
-`temps-plugin-sdk`. Services deployed on Temps export OTLP/HTTP (JSON) traces to
-the plugin; the console gets a service table, a live span feed and a per-trace
-waterfall.
+OpenTelemetry dashboard plugin for [Temps](https://temps.sh). Services deployed
+on Temps export OTLP/HTTP (JSON) traces to the plugin; the console gets a
+service table, a live span feed and a per-trace waterfall.
+
+The plugin exists in two builds that share the HTTP API, SQLite schema and the
+React UI in `web/`:
+
+| Build | Where | Install path |
+|---|---|---|
+| **TypeScript** (`@temps-sdk/plugin`, Bun, `bun:sqlite`) | `ts/` | *Install from GitHub* on any Temps host: `temps plugin install https://github.com/FrancisVarga/temps-proj-otel-dash --path ts` |
+| **Rust** (`temps-plugin-sdk`, axum, sea-orm) | repository root | Local simulator / development hosts today; signed native-package catalog for distribution |
+
+Temps' GitHub installer builds TypeScript only and the host refuses binaries
+that are not backed by a verified install receipt, so the TypeScript build is
+the one that runs on hosts right now. The Rust build is the reference for the
+high-throughput path and is kept in lockstep (same routes, same wire types in
+`src/types.rs` / `ts/src/types.ts` / `web/src/types.ts`).
 
 ```
 exporter ─POST /api/x/otel-dash/v1/traces─▶ Temps proxy ─▶ plugin (unix socket)
@@ -105,13 +118,34 @@ Mounted at `/api/x/otel-dash`. See `openapi_schema()` in `src/main.rs`.
 | PATCH | `/settings` | Temps admin |
 | GET / POST | `/settings/token` | Temps admin |
 
-## Distribution
+## TypeScript build (`ts/`)
 
-Temps' *Install from GitHub* flow builds TypeScript plugins only. A Rust plugin
-is tested locally (simulator or a development host) and distributed through
-the signed native-package catalog pipeline, which is a separate task from this
-repository. Bump the `temps-plugin-sdk` tag in `Cargo.toml` deliberately: the
-channel protocol must match the Temps host.
+```sh
+cd ts
+bun install --frozen-lockfile
+bun test && bun run check
+bun run build        # regenerates src/_embedded_ui.ts from ../web/dist and compiles dist/temps-otel-dash-plugin
+bunx --bun @temps-sdk/cli plugin dev ./dist/temps-otel-dash-plugin --session otel-ts
+```
+
+`ts/src/_embedded_ui.ts` is generated and committed because the host installer
+runs `bun install --ignore-scripts` and compiles `src/index.ts` offline. After
+changing anything under `web/`, run `bun run embed` in `ts/` and commit the result.
+
+Install or update on a host (admin API key configured in the Temps CLI):
+
+```sh
+bunx --bun @temps-sdk/cli plugin install https://github.com/FrancisVarga/temps-proj-otel-dash --path ts
+bunx --bun @temps-sdk/cli plugin update otel-dash
+```
+
+## Distribution of the Rust build
+
+Temps' *Install from GitHub* flow builds TypeScript plugins only. The Rust
+binary is tested locally (simulator or a development host) and distributed
+through the signed native-package catalog pipeline, which is a separate task
+from this repository. Bump the `temps-plugin-sdk` tag in `Cargo.toml`
+deliberately: the channel protocol must match the Temps host.
 
 ## License
 
