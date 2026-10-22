@@ -1,0 +1,101 @@
+{
+  "version": 1,
+  "skills": {
+    "add-custom-domain": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/add-custom-domain/SKILL.md",
+      "computedHash": "73f22a3965709dd99eae15b5b5c32b088258c8f14c9e43fce4a3cb8abe92ba61"
+    },
+    "add-error-tracking": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/add-error-tracking/SKILL.md",
+      "computedHash": "238d72f83de7b0f11a5588ccd91b45a81dca9ce9b8dd237f2fbb02b9d95ea8a1"
+    },
+    "add-node-sdk": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/add-node-sdk/SKILL.md",
+      "computedHash": "429fcb7c5991b039e13b323ab1fc87c304e25e4e75fc50c788142283211f11eb"
+    },
+    "add-react-analytics": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/add-react-analytics/SKILL.md",
+      "computedHash": "511549a4e417ce8cb33d5b8174eca06bcf0c9e08a93ed2608c9d84117ff90223"
+    },
+    "add-session-recording": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/add-session-recording/SKILL.md",
+      "computedHash": "cb94d273d8228b980f1bf2139e72a55ac40a495f088046dfc2637bfbb0bd9515"
+    },
+    "deploy-to-temps": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/deploy-to-temps/SKILL.md",
+      "computedHash": "0c5dec4d098b3404daf755d19931632cee763859ec9f1138ad9bf38c88e479fb"
+    },
+    "estimate-temps-savings": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/estimate-temps-savings/SKILL.md",
+      "computedHash": "bc4f31456578606b953f6d191d03264e5c4ac902a1344cc0c9a83680af9cfaf2"
+    },
+    "start-temps": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/start-temps/SKILL.md",
+      "computedHash": "780930617e3f781e3a157606f79318c60f0427347bb7f561a2562f24a935048a"
+    },
+    "start-temps-cluster": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/start-temps-cluster/SKILL.md",
+      "computedHash": "08c830ba3109dd4711ba02d15e3f81086c44584d74e00312b0e1d9be2eac9faf"
+    },
+    "temps": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/temps/SKILL.md",
+      "computedHash": "8148ba8008dc2f5fec7c037c84e2e5790d54b42a8b56b2a18d1371a994374f5f"
+    },
+    "temps-best-practices": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/temps-best-practices/SKILL.md",
+      "computedHash": "e61bde33601524c0372853ba57514eb44616a001fc09bfec9043c1f84e40f4d6"
+    },
+    "temps-cli": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/temps-cli/SKILL.md",
+      "computedHash": "e6e64590f179ff316cf10888671f8d9e0cb5339d5db87b5550b2efba00aa7ed4"
+    },
+    "temps-design-system": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/temps-design-system/SKILL.md",
+      "computedHash": "cb715bab2acb120a8389fd9c5182102a4e67790e736fecd2146a54b101965997"
+    },
+    "temps-mcp-setup": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/temps-mcp-setup/SKILL.md",
+      "computedHash": "8a3d942af7d38c7e52357068a1f9ad8943ebd43883d4739380b8531054b82461"
+    },
+    "temps-platform-setup": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/temps-platform-setup/SKILL.md",
+      "computedHash": "fe746b538f19b9dfb722f9b1bcfa0506b4e359f9df42b2b7f395e76d9223392f"
+    },
+    "temps-plugin": {
+      "source": "gotempsh/temps",
+      "sourceType": "github",
+      "skillPath": "skills/temps-plugin/SKILL.md",
+      "computedHash": "ce13ba15c0fde7e025e4b76439284c873d9d490f02cbed1271c1f7e5ef4907fc"
+    }
+  }
+}
