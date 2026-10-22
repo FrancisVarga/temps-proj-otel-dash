@@ -31,6 +31,13 @@ export function Settings() {
     });
 
   const s = settings.data;
+  // Temps passes the plugin its internal bind address (e.g. http://127.0.0.1:3000),
+  // which exporters outside the host cannot reach. The console origin is the
+  // public URL, so prefer it whenever the reported URL is loopback or missing.
+  const ingestUrl =
+    s?.ingestUrl && !/^https?:\/\/(127\.|localhost|0\.0\.0\.0|\[::1\])/i.test(s.ingestUrl)
+      ? s.ingestUrl
+      : `${window.location.origin}/api/x/otel-dash/v1/traces`;
 
   return (
     <main>
@@ -52,7 +59,7 @@ export function Settings() {
             <div className="card-body">
               <p>Configure your OTLP/HTTP exporter with JSON encoding:</p>
               <pre>{`OTEL_EXPORTER_OTLP_PROTOCOL=http/json
-OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${s.ingestUrl ?? "<temps-url>/api/x/otel-dash/v1/traces"}
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=${ingestUrl}
 OTEL_EXPORTER_OTLP_HEADERS="X-Otel-Dash-Token=${token ?? s.tokenPreview}"`}</pre>
               <div className="actions">
                 <button
